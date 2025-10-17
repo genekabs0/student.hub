@@ -83,7 +83,21 @@ function setupThemeToggle() {
     }
 }
 
-// Links Management (Adding this here since it's missing)
+// FIXED: Open link with proper URL formatting
+function openLink(url) {
+    // Ensure URL has proper protocol
+    let properUrl = url.trim();
+    
+    // If URL doesn't start with http:// or https://, add https://
+    if (!properUrl.startsWith('http://') && !properUrl.startsWith('https://')) {
+        properUrl = 'https://' + properUrl;
+    }
+    
+    // Open in new tab with security features
+    window.open(properUrl, '_blank', 'noopener,noreferrer');
+}
+
+// Links Management (FIXED VERSION)
 async function renderLinks() {
     if (!currentSubject) return;
 
@@ -107,16 +121,20 @@ async function renderLinks() {
         item.innerHTML = `
             <span class="link-icon">🔗</span>
             <div class="link-content">
-                <a href="${escapeHtml(link.url)}" target="_blank" class="link-title">
-                    ${escapeHtml(link.title)}
-                </a>
+                <div class="link-title">${escapeHtml(link.title)}</div>
                 ${link.description ? `<div class="link-desc">${escapeHtml(link.description)}</div>` : ''}
             </div>
             <span class="link-delete" data-id="${link.id}">🗑️</span>
         `;
 
+        // Click link content to open URL in external browser
+        item.querySelector('.link-content').addEventListener('click', () => {
+            openLink(link.url);
+        });
+
         // Delete link
         item.querySelector('.link-delete').addEventListener('click', async (e) => {
+            e.stopPropagation();
             if (confirm('Delete this link?')) {
                 await db.links.delete(link.id);
                 renderLinks();
@@ -138,7 +156,7 @@ function showAddLinkModal() {
 async function saveLink() {
     if (!currentSubject) return;
 
-    const url = document.getElementById('link-url-input').value.trim();
+    let url = document.getElementById('link-url-input').value.trim();
     const title = document.getElementById('link-title-input').value.trim();
     const description = document.getElementById('link-desc-input').value.trim();
 
@@ -147,10 +165,15 @@ async function saveLink() {
         return;
     }
 
+    // Add https:// if missing
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+
     const link = {
         subjectId: currentSubject.id,
-        url,
-        title: title || url,
+        url: url,
+        title: title || url.replace('https://', '').replace('http://', ''),
         description,
         createdAt: Date.now()
     };
