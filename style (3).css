@@ -105,6 +105,8 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    max-width: 100%;
+    width: 100%;
 }
 
 .top-bar {
@@ -114,6 +116,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .page-title {
@@ -129,7 +133,7 @@ body {
 .page-content {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     padding: var(--spacing-lg);
     -webkit-overflow-scrolling: touch;
 }
@@ -581,6 +585,8 @@ body {
     grid-template-columns: 250px 1fr;
     gap: var(--spacing-lg);
     height: calc(100vh - 120px);
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .notes-sidebar {
@@ -588,6 +594,8 @@ body {
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
 }
 
 .notes-header {
@@ -635,12 +643,16 @@ body {
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .editor-header {
     display: flex;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-md);
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .note-title-input {
@@ -653,6 +665,7 @@ body {
     font-size: 18px;
     font-weight: 600;
     font-family: inherit;
+    max-width: 100%;
 }
 
 .note-subject-select {
@@ -672,6 +685,8 @@ body {
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
     flex-wrap: wrap;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .editor-toolbar .btn-icon {
@@ -680,6 +695,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .heading-select {
@@ -689,11 +705,13 @@ body {
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-sm);
     font-family: inherit;
+    max-width: 120px;
 }
 
 .highlight-colors {
     display: flex;
     gap: var(--spacing-xs);
+    flex-shrink: 0;
 }
 
 .btn-color {
@@ -703,6 +721,7 @@ body {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition);
+    flex-shrink: 0;
 }
 
 .btn-color:hover {
@@ -716,9 +735,12 @@ body {
     border-radius: var(--radius-md);
     padding: var(--spacing-lg);
     overflow-y: auto;
+    overflow-x: hidden;
     min-height: 300px;
     font-size: 15px;
     line-height: 1.8;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .editor-content:focus {
@@ -1206,33 +1228,44 @@ body {
 
     .main-content {
         margin-bottom: 80px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .page-content {
         padding: var(--spacing-md);
         height: calc(100vh - 60px - 80px);
         overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         padding-bottom: 100px;
     }
 
     .top-bar {
         padding: var(--spacing-md);
+        width: 100%;
+        max-width: 100%;
     }
 
     .page-title {
         font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
     }
 
     /* Grid layouts */
     .subjects-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
+        width: 100%;
     }
 
     .subject-card {
         padding: var(--spacing-md);
+        width: 100%;
+        max-width: 100%;
     }
 
     .subject-color-picker {
@@ -1265,16 +1298,37 @@ body {
     .notes-container {
         grid-template-columns: 1fr;
         height: auto;
+        width: 100%;
+        max-width: 100%;
     }
 
     .notes-sidebar {
         max-height: 200px;
         margin-bottom: var(--spacing-md);
+        width: 100%;
+    }
+
+    .notes-editor {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .editor-header {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .note-title-input,
+    .note-subject-select {
+        width: 100%;
+        max-width: 100%;
     }
 
     .editor-toolbar {
         padding: var(--spacing-sm);
         gap: 4px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .editor-toolbar .btn-icon {
@@ -1283,17 +1337,25 @@ body {
         font-size: 16px;
     }
 
+    .editor-content {
+        width: 100%;
+        max-width: 100%;
+    }
+
     /* Calendar */
     .calendar-container {
         grid-template-columns: 1fr;
+        width: 100%;
     }
 
     .calendar-sidebar {
         margin-top: var(--spacing-md);
+        width: 100%;
     }
 
     .calendar-grid {
         gap: 4px;
+        width: 100%;
     }
 
     .calendar-day {
@@ -1305,12 +1367,14 @@ body {
     /* Storage */
     .storage-content {
         grid-template-columns: 1fr;
+        width: 100%;
     }
 
     .folders-list {
         margin-bottom: var(--spacing-md);
         max-height: 200px;
         overflow-y: auto;
+        width: 100%;
     }
 
     /* Timer */
@@ -1326,6 +1390,7 @@ body {
     .timer-controls {
         flex-wrap: wrap;
         gap: var(--spacing-sm);
+        width: 100%;
     }
 
     .timer-controls .btn {
@@ -1343,12 +1408,14 @@ body {
     .modal-content {
         width: 95%;
         margin: var(--spacing-md);
+        max-width: calc(100vw - 32px);
     }
 
     /* Overall progress */
     .overall-progress-stats {
         flex-direction: column;
         gap: var(--spacing-sm);
+        width: 100%;
     }
 
     /* Page header */
@@ -1356,6 +1423,7 @@ body {
         flex-direction: column;
         gap: var(--spacing-md);
         align-items: flex-start;
+        width: 100%;
     }
 
     .page-header h3 {
@@ -1365,10 +1433,12 @@ body {
     /* Settings */
     .settings-sections {
         max-width: 100%;
+        width: 100%;
     }
 
     .color-picker {
         gap: var(--spacing-xs);
+        width: 100%;
     }
 
     .color-option {
@@ -1379,6 +1449,7 @@ body {
     /* Assignment items */
     .assignment-item {
         flex-wrap: wrap;
+        width: 100%;
     }
 
     .assignment-due {
@@ -1396,10 +1467,13 @@ body {
     /* Subject sections - better scroll */
     .subject-sections {
         padding-bottom: 20px;
+        width: 100%;
     }
 
     .section {
         margin-bottom: var(--spacing-md);
+        width: 100%;
+        max-width: 100%;
     }
 }
 
