@@ -43,6 +43,8 @@ body {
     display: flex;
     height: 100vh;
     overflow: hidden;
+    position: relative;
+    width: 100%;
 }
 
 /* ===== SIDEBAR NAVIGATION ===== */
@@ -127,7 +129,9 @@ body {
 .page-content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: var(--spacing-lg);
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ===== PAGES ===== */
@@ -533,6 +537,7 @@ body {
     align-items: center;
     gap: var(--spacing-md);
     transition: all var(--transition);
+    cursor: pointer;
 }
 
 .link-item:hover {
@@ -1151,6 +1156,9 @@ body {
 @media (max-width: 768px) {
     body {
         font-size: 14px;
+        position: fixed;
+        width: 100%;
+        height: 100%;
     }
 
     .sidebar {
@@ -1202,6 +1210,11 @@ body {
 
     .page-content {
         padding: var(--spacing-md);
+        height: calc(100vh - 60px - 80px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 100px;
     }
 
     .top-bar {
@@ -1231,6 +1244,21 @@ body {
     .subject-color-btn {
         width: 18px;
         height: 18px;
+    }
+
+    /* Assignment button positioning FIX */
+    .assignment-filters {
+        flex-direction: column;
+        width: 100%;
+        gap: var(--spacing-sm);
+    }
+
+    .assignment-filters select {
+        width: 100%;
+    }
+
+    .assignment-filters .btn {
+        width: 100%;
     }
 
     /* Notes */
@@ -1364,6 +1392,15 @@ body {
         width: 100%;
         justify-content: flex-end;
     }
+
+    /* Subject sections - better scroll */
+    .subject-sections {
+        padding-bottom: 20px;
+    }
+
+    .section {
+        margin-bottom: var(--spacing-md);
+    }
 }
 
 @media (max-width: 480px) {
@@ -1384,6 +1421,13 @@ body {
     .form-group textarea,
     .form-group select {
         font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* iOS Safari bottom bar fix */
+@supports (padding: max(0px)) {
+    .page-content {
+        padding-bottom: max(100px, env(safe-area-inset-bottom));
     }
 }
 
