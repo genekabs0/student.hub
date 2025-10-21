@@ -5,7 +5,8 @@ let selectedColor = '#34495E';
 
 // Render subjects grid
 async function renderSubjects() {
-    const subjects = await db.subjects.toArray();
+    const allSubjects = await db.subjects.toArray();
+    const subjects = allSubjects.filter(s => !s.deleted); // Filter out deleted subjects
     const grid = document.getElementById('subjects-grid');
 
     if (subjects.length === 0) {
@@ -209,10 +210,13 @@ async function saveSubject() {
         return;
     }
 
+    const now = Date.now();
     const subject = {
         name,
         color: selectedColor,
-        createdAt: Date.now()
+        createdAt: now,
+        lastModified: now,
+        deleted: false
     };
 
     const id = await db.subjects.add(subject);
@@ -220,9 +224,9 @@ async function saveSubject() {
     closeModal('add-subject-modal');
     renderSubjects();
 
-    // Sync to Firebase if logged in
-    if (window.syncToFirestore) {
-        await window.syncToFirestore();
+    // Sync to Firebase
+    if (window.smartSync) {
+        await window.smartSync();
     }
 }
 
@@ -233,14 +237,20 @@ async function editSubject() {
     const newName = prompt('Enter new subject name:', currentSubject.name);
     if (!newName || newName.trim() === '') return;
 
-    await db.subjects.update(currentSubject.id, { name: newName.trim() });
+    await db.subjects.update(currentSubject.id, {
+        name: newName.trim(),
+        lastModified: Date.now()
+    });
     currentSubject.name = newName.trim();
     document.getElementById('subject-title').textContent = newName.trim();
     document.querySelector('.page-title').textContent = newName.trim();
+
+    // Sync to Firebase
+    if (window.smartSync) await window.smartSync();
     renderSubjects();
 }
 
-// Delete subject
+// Delete subject (soft delete)
 async function deleteSubject() {
     if (!currentSubject) return;
 
@@ -248,14 +258,29 @@ async function deleteSubject() {
         return;
     }
 
-    // Delete related data
-    await db.assignments.where('subjectId').equals(currentSubject.id).delete();
-    await db.links.where('subjectId').equals(currentSubject.id).delete();
-    await db.notes.where('subjectId').equals(currentSubject.id).delete();
-    await db.files.where('subjectId').equals(currentSubject.id).delete();
+    const now = Date.now();
 
-    // Delete subject
-    await db.subjects.delete(currentSubject.id);
+    // Soft delete related data
+    const assignments = await db.assignments.where('subjectId').equals(currentSubject.id).toArray();
+    for (const a of assignments) {
+        await db.assignments.update(a.id, { deleted: true, lastModified: now });
+    }
+
+    const links = await db.links.where('subjectId').equals(currentSubject.id).toArray();
+    for (const l of links) {
+        await db.links.update(l.id, { deleted: true, lastModified: now });
+    }
+
+    const notes = await db.notes.where('subjectId').equals(currentSubject.id).toArray();
+    for (const n of notes) {
+        await db.notes.update(n.id, { deleted: true, lastModified: now });
+    }
+
+    // Soft delete subject
+    await db.subjects.update(currentSubject.id, { deleted: true, lastModified: now });
+
+    // Sync to Firebase
+    if (window.smartSync) await window.smartSync();
 
     backToDashboard();
 }

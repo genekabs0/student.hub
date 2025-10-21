@@ -11,16 +11,19 @@ async function renderAssignments() {
         .equals(currentSubject.id)
         .toArray();
 
+    // Filter out deleted assignments first
+    const activeAssignments = allAssignments.filter(a => !a.deleted);
+
     // Filter assignments
-    let assignments = allAssignments;
+    let assignments = activeAssignments;
     if (currentFilter === 'completed') {
-        assignments = allAssignments.filter(a => a.completed && !a.archived);
+        assignments = activeAssignments.filter(a => a.completed && !a.archived);
     } else if (currentFilter === 'incomplete') {
-        assignments = allAssignments.filter(a => !a.completed && !a.archived);
+        assignments = activeAssignments.filter(a => !a.completed && !a.archived);
     } else if (currentFilter === 'archived') {
-        assignments = allAssignments.filter(a => a.archived);
+        assignments = activeAssignments.filter(a => a.archived);
     } else if (currentFilter === 'all') {
-        assignments = allAssignments.filter(a => !a.archived);
+        assignments = activeAssignments.filter(a => !a.archived);
     }
 
     // Sort by due date
@@ -76,9 +79,10 @@ async function renderAssignments() {
         if (archiveBtn) {
             archiveBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                await db.assignments.update(assignment.id, { archived: true });
+                await db.assignments.update(assignment.id, { archived: true, lastModified: Date.now() });
                 await renderAssignments();
                 await updateSubjectProgress();
+                if (window.smartSync) await window.smartSync();
             });
         }
 
@@ -87,20 +91,22 @@ async function renderAssignments() {
         if (unarchiveBtn) {
             unarchiveBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                await db.assignments.update(assignment.id, { archived: false });
+                await db.assignments.update(assignment.id, { archived: false, lastModified: Date.now() });
                 await renderAssignments();
                 await updateSubjectProgress();
+                if (window.smartSync) await window.smartSync();
             });
         }
 
-        // Delete assignment
+        // Delete assignment (soft delete)
         const deleteBtn = item.querySelector('.assignment-delete');
         deleteBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (confirm('Delete this assignment?')) {
-                await db.assignments.delete(assignment.id);
+                await db.assignments.update(assignment.id, { deleted: true, lastModified: Date.now() });
                 await renderAssignments();
                 await updateSubjectProgress();
+                if (window.smartSync) await window.smartSync();
             }
         });
 
@@ -110,9 +116,10 @@ async function renderAssignments() {
 
 // Toggle assignment completion
 async function toggleAssignmentCompletion(id, completed) {
-    await db.assignments.update(id, { completed });
+    await db.assignments.update(id, { completed, lastModified: Date.now() });
     await renderAssignments();
     await updateSubjectProgress();
+    if (window.smartSync) await window.smartSync();
 }
 
 // Show add assignment modal
@@ -143,6 +150,7 @@ async function saveAssignment() {
         return;
     }
 
+    const now = Date.now();
     const assignment = {
         subjectId: currentSubject.id,
         title,
@@ -151,13 +159,18 @@ async function saveAssignment() {
         notes,
         completed: false,
         archived: false,
-        createdAt: Date.now()
+        createdAt: now,
+        lastModified: now,
+        deleted: false
     };
 
     await db.assignments.add(assignment);
     closeModal('add-assignment-modal');
     await renderAssignments();
     await updateSubjectProgress();
+
+    // Sync to Firebase
+    if (window.smartSync) await window.smartSync();
 }
 
 // Initialize assignments

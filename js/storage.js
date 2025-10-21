@@ -1,14 +1,20 @@
 // ===== INDEXEDDB SETUP =====
 const db = new Dexie('StudentTaskManager');
 
-db.version(2).stores({
-    subjects: '++id, name, color, createdAt',
-    assignments: '++id, subjectId, title, dueDate, dueTime, completed, archived, createdAt',
-    links: '++id, subjectId, url, title, createdAt',
-    notes: '++id, subjectId, title, content, lastEdited, createdAt',
-    files: '++id, subjectId, fileName, fileType, fileSize, uploadedAt',
-    calendarTasks: '++id, date, title, completed, createdAt',
-    focusSessions: '++id, subjectId, duration, startTime, endTime, completed'
+db.version(3).stores({
+    subjects: '++id, name, color, createdAt, lastModified, deleted',
+    assignments: '++id, subjectId, title, dueDate, dueTime, completed, archived, createdAt, lastModified, deleted',
+    links: '++id, subjectId, url, title, createdAt, lastModified, deleted',
+    notes: '++id, subjectId, title, content, lastEdited, createdAt, lastModified, deleted',
+    files: '++id, subjectId, fileName, fileType, fileSize, uploadedAt, lastModified, deleted',
+    calendarTasks: '++id, date, title, completed, createdAt, lastModified, deleted',
+    focusSessions: '++id, subjectId, duration, startTime, endTime, completed, lastModified, deleted'
+}).upgrade(tx => {
+    // Add default values for existing records
+    return tx.table('subjects').toCollection().modify(subject => {
+        subject.lastModified = subject.createdAt || Date.now();
+        subject.deleted = false;
+    });
 });
 
 // ===== LOCALSTORAGE HELPERS =====
