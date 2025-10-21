@@ -192,8 +192,15 @@ function setupRealtimeListeners() {
 
   const userId = currentUser.uid;
 
-  // Listen to subjects changes
+  // Listen to subjects changes (skip initial snapshot since we already synced)
+  let isFirstSnapshot = true;
   firestore.collection('users').doc(userId).collection('subjects').onSnapshot((snapshot) => {
+    // Skip the first snapshot (initial data already loaded by syncFromFirestore)
+    if (isFirstSnapshot) {
+      isFirstSnapshot = false;
+      return;
+    }
+    
     snapshot.docChanges().forEach(async (change) => {
       if (change.type === 'added' || change.type === 'modified') {
         const data = change.doc.data();
