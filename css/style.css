@@ -102,6 +102,61 @@ body {
     font-size: 20px;
 }
 
+/* Nav Section (collapsible) */
+.nav-section {
+    margin-bottom: var(--spacing-sm);
+}
+
+.nav-section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    text-align: left;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 14px;
+}
+
+.nav-section-toggle:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.nav-section-toggle .toggle-icon {
+    margin-left: auto;
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.nav-section-toggle.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.nav-subsection {
+    list-style: none;
+    padding-left: var(--spacing-md);
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.nav-subsection.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.nav-sublink {
+    padding-left: calc(var(--spacing-md) + 20px);
+    font-size: 13px;
+}
+
 /* ===== MAIN CONTENT AREA ===== */
 .main-content {
     flex: 1;
@@ -1157,6 +1212,55 @@ body {
     background: var(--border);
 }
 
+/* Hamburger menu now on both desktop and mobile */
+
+/* ===== TOP MENU DROPDOWN (MOBILE) ===== */
+.top-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 64px;
+    right: 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    min-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.top-menu-dropdown.active {
+    display: block;
+}
+
+.top-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.top-menu-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.top-menu-item .icon {
+    font-size: 18px;
+}
+
+.top-menu-divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--spacing-sm) 0;
+}
+
+#top-menu-user-section {
+    padding: var(--spacing-sm);
+}
+
 /* ===== MORE MENU (MOBILE) ===== */
 .nav-link-mobile-only {
     display: none;
@@ -1271,6 +1375,11 @@ body {
         display: block;
     }
 
+    /* Hide collapsible sections on mobile */
+    .nav-section {
+        display: none !important;
+    }
+
     .sidebar {
         position: fixed;
         bottom: 0;
@@ -1354,17 +1463,13 @@ body {
         font-size: 18px;
     }
 
-    /* Hide some top bar items on mobile */
-    .quick-search {
-        display: none;
-    }
-
-    #user-info span {
-        display: none; /* Hide name, just show profile pic */
-    }
-
+    /* User info always in dropdown on mobile */
     #user-info {
-        gap: 4px !important;
+        display: none !important;
+    }
+
+    #google-login-btn {
+        display: none !important;
     }
 
     /* Grid layouts */
@@ -1604,5 +1709,3 @@ body.light-mode {
     outline: none;
     border-color: var(--accent);
 }
-
-

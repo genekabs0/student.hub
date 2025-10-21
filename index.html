@@ -10,7 +10,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>TaskFlow - Student Task Manager</title>
-    <link rel="stylesheet" href="css/style.css?v=18">
+    <link rel="stylesheet" href="css/style.css?v=20">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
@@ -25,30 +25,44 @@
                 <span class="icon">🏠</span>
                 <span>Dashboard</span>
             </a></li>
-            <li><a href="#" data-page="notes" class="nav-link nav-link-desktop">
-                <span class="icon">📝</span>
-                <span>Notes</span>
-            </a></li>
-            <li><a href="#" data-page="calendar" class="nav-link nav-link-desktop">
-                <span class="icon">📅</span>
-                <span>Calendar</span>
-            </a></li>
             <li><a href="#" data-page="storage" class="nav-link">
                 <span class="icon">💾</span>
                 <span>Storage</span>
             </a></li>
-            <li><a href="#" data-page="timer" class="nav-link nav-link-desktop">
-                <span class="icon">⏱️</span>
-                <span>Timer</span>
-            </a></li>
-            <li><a href="#" data-page="wheel" class="nav-link nav-link-desktop">
-                <span class="icon">🎯</span>
-                <span>Wheel</span>
-            </a></li>
+
+            <!-- Tools Section (collapsible on desktop) -->
+            <li class="nav-section">
+                <button class="nav-section-toggle" id="tools-toggle">
+                    <span class="icon">🛠️</span>
+                    <span>Tools</span>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <ul class="nav-subsection" id="tools-section">
+                    <li><a href="#" data-page="notes" class="nav-link nav-sublink">
+                        <span class="icon">📝</span>
+                        <span>Notes</span>
+                    </a></li>
+                    <li><a href="#" data-page="calendar" class="nav-link nav-sublink">
+                        <span class="icon">📅</span>
+                        <span>Calendar</span>
+                    </a></li>
+                    <li><a href="#" data-page="timer" class="nav-link nav-sublink">
+                        <span class="icon">⏱️</span>
+                        <span>Timer</span>
+                    </a></li>
+                    <li><a href="#" data-page="wheel" class="nav-link nav-sublink">
+                        <span class="icon">🎯</span>
+                        <span>Wheel</span>
+                    </a></li>
+                </ul>
+            </li>
+
             <li><a href="#" data-page="settings" class="nav-link">
                 <span class="icon">⚙️</span>
                 <span>Settings</span>
             </a></li>
+
+            <!-- Mobile More button -->
             <li class="nav-link-mobile-only"><a href="#" id="more-menu-btn" class="nav-link">
                 <span class="icon">⋮</span>
                 <span>More</span>
@@ -90,17 +104,29 @@
         <header class="top-bar">
             <h2 class="page-title">Dashboard</h2>
             <div class="top-bar-actions">
-                <button class="btn-icon" id="toggle-nav-btn" title="Toggle Navigation">
-                    <span id="nav-toggle-icon">⬇️</span>
-                </button>
                 <button class="btn-icon quick-search" title="Quick Search">
                     <span>🔍</span>
                 </button>
                 <button class="btn-icon theme-toggle" title="Toggle Theme">
                     <span>🌙</span>
                 </button>
+                <button class="btn-icon" id="top-menu-btn" title="Menu">
+                    <span>☰</span>
+                </button>
             </div>
         </header>
+
+        <!-- Top Menu Dropdown -->
+        <div class="top-menu-dropdown" id="top-menu-dropdown">
+            <div class="top-menu-item" id="toggle-nav-item">
+                <span class="icon" id="nav-toggle-icon">⬇️</span>
+                <span>Toggle Navigation</span>
+            </div>
+            <div class="top-menu-divider"></div>
+            <div id="top-menu-user-section">
+                <!-- User info or sign in button will be inserted here -->
+            </div>
+        </div>
 
         <!-- Page Content Container -->
         <div class="page-content">
@@ -493,16 +519,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <script src="js/storage.js?v=18"></script>
-    <script src="js/firebase-sync.js?v=18"></script>
-    <script src="js/utils.js?v=18"></script>
-    <script src="js/subjects.js?v=18"></script>
-    <script src="js/assignments.js?v=18"></script>
-    <script src="js/notes.js?v=18"></script>
-    <script src="js/calendar.js?v=18"></script>
-    <script src="js/timer.js?v=18"></script>
-    <script src="js/wheel.js?v=18"></script>
-    <script src="js/app.js?v=18"></script>
+    <script src="js/storage.js?v=20"></script>
+    <script src="js/firebase-sync.js?v=20"></script>
+    <script src="js/utils.js?v=20"></script>
+    <script src="js/subjects.js?v=20"></script>
+    <script src="js/assignments.js?v=20"></script>
+    <script src="js/notes.js?v=20"></script>
+    <script src="js/calendar.js?v=20"></script>
+    <script src="js/timer.js?v=20"></script>
+    <script src="js/wheel.js?v=20"></script>
+    <script src="js/app.js?v=20"></script>
 </body>
 </html>
-

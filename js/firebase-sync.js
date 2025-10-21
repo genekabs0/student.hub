@@ -207,61 +207,61 @@ function setupRealtimeListeners() {
 
 // UI Functions
 function showLoginButton() {
-  let loginBtn = document.getElementById('google-login-btn');
-  if (!loginBtn) {
-    loginBtn = document.createElement('button');
-    loginBtn.id = 'google-login-btn';
-    loginBtn.className = 'btn btn-primary';
-    loginBtn.innerHTML = '🔐 Sign in';
-    loginBtn.style.marginLeft = '12px';
-    loginBtn.addEventListener('click', signInWithGoogle);
-
-    const topBarActions = document.querySelector('.top-bar-actions');
-    if (topBarActions) {
-      topBarActions.insertBefore(loginBtn, topBarActions.firstChild);
-    }
+  // Login button in dropdown (both desktop and mobile)
+  const userSection = document.getElementById('top-menu-user-section');
+  if (userSection) {
+    userSection.innerHTML = `
+      <div class="top-menu-item" id="dropdown-sign-in-btn">
+        <span class="icon">🔐</span>
+        <span>Sign in with Google</span>
+      </div>
+    `;
+    document.getElementById('dropdown-sign-in-btn').addEventListener('click', () => {
+      signInWithGoogle();
+      document.getElementById('top-menu-dropdown').classList.remove('active');
+    });
   }
-  loginBtn.style.display = 'inline-block';
 
   const userInfo = document.getElementById('user-info');
   if (userInfo) userInfo.style.display = 'none';
 }
 
 function showUserInfo(user) {
-  const loginBtn = document.getElementById('google-login-btn');
-  if (loginBtn) loginBtn.style.display = 'none';
-
-  let userInfo = document.getElementById('user-info');
-  if (!userInfo) {
-    userInfo = document.createElement('div');
-    userInfo.id = 'user-info';
-    userInfo.style.display = 'flex';
-    userInfo.style.alignItems = 'center';
-    userInfo.style.gap = '8px';
-    userInfo.style.marginLeft = '12px';
-
-    const topBarActions = document.querySelector('.top-bar-actions');
-    if (topBarActions) {
-      topBarActions.insertBefore(userInfo, topBarActions.firstChild);
-    }
-  }
-
   const displayName = user.displayName || user.email.split('@')[0];
-  userInfo.innerHTML = `
-    ${user.photoURL ? `<img src="${user.photoURL}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%;">` : ''}
-    <span style="font-size: 14px; color: var(--text-primary);">${displayName}</span>
-    <button id="sync-now-btn" class="btn btn-secondary btn-sm" title="Sync Now">🔄</button>
-    <button id="sign-out-btn" class="btn btn-secondary btn-sm">Sign Out</button>
-  `;
-  userInfo.style.display = 'flex';
 
-  document.getElementById('sync-now-btn').addEventListener('click', async () => {
-    await syncToFirestore();
-    await syncFromFirestore();
-    alert('✅ Data synced!');
-  });
+  // User info in dropdown (both desktop and mobile)
+  const userSection = document.getElementById('top-menu-user-section');
+  if (userSection) {
+    userSection.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px; border-bottom: 1px solid var(--border);">
+        ${user.photoURL ? `<img src="${user.photoURL}" alt="Profile" style="width: 36px; height: 36px; border-radius: 50%;">` : ''}
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 500;">${displayName}</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">${user.email}</div>
+        </div>
+      </div>
+      <div class="top-menu-item" id="dropdown-sync-btn">
+        <span class="icon">🔄</span>
+        <span>Sync Now</span>
+      </div>
+      <div class="top-menu-item" id="dropdown-sign-out-btn">
+        <span class="icon">🚪</span>
+        <span>Sign Out</span>
+      </div>
+    `;
 
-  document.getElementById('sign-out-btn').addEventListener('click', signOutUser);
+    document.getElementById('dropdown-sync-btn').addEventListener('click', async () => {
+      await syncToFirestore();
+      await syncFromFirestore();
+      alert('✅ Data synced!');
+      document.getElementById('top-menu-dropdown').classList.remove('active');
+    });
+
+    document.getElementById('dropdown-sign-out-btn').addEventListener('click', () => {
+      signOutUser();
+      document.getElementById('top-menu-dropdown').classList.remove('active');
+    });
+  }
 }
 
 // Auto-sync when data changes

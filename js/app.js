@@ -504,6 +504,51 @@ function setupSettings() {
     });
 }
 
+// Setup collapsible nav sections
+function setupCollapsibleNav() {
+    const toolsToggle = document.getElementById('tools-toggle');
+    const toolsSection = document.getElementById('tools-section');
+
+    if (toolsToggle && toolsSection) {
+        toolsToggle.addEventListener('click', () => {
+            toolsToggle.classList.toggle('collapsed');
+            toolsSection.classList.toggle('collapsed');
+        });
+    }
+}
+
+// Setup top menu dropdown
+function setupTopMenu() {
+    const topMenuBtn = document.getElementById('top-menu-btn');
+    const topMenuDropdown = document.getElementById('top-menu-dropdown');
+    const toggleNavItem = document.getElementById('toggle-nav-item');
+
+    if (topMenuBtn) {
+        topMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            topMenuDropdown.classList.toggle('active');
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (topMenuDropdown && !topMenuDropdown.contains(e.target) && e.target !== topMenuBtn) {
+            topMenuDropdown.classList.remove('active');
+        }
+    });
+
+    // Nav toggle from dropdown (works on both desktop and mobile)
+    if (toggleNavItem) {
+        toggleNavItem.addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('hidden');
+            const isHidden = sidebar.classList.contains('hidden');
+            document.getElementById('nav-toggle-icon').textContent = isHidden ? '⬆️' : '⬇️';
+            topMenuDropdown.classList.remove('active');
+        });
+    }
+}
+
 // Initialize app
 async function init() {
     console.log('🚀 Student Task Manager initializing...');
@@ -513,6 +558,8 @@ async function init() {
 
     // Setup navigation
     setupNavigation();
+    setupCollapsibleNav();
+    setupTopMenu();
     setupQuickSearch();
     setupThemeToggle();
 
@@ -577,21 +624,7 @@ function setupAutoHideNav() {
     }
 }
 
-// Manual toggle navigation
-function setupManualNavToggle() {
-    const toggleBtn = document.getElementById('toggle-nav-btn');
-    const sidebar = document.querySelector('.sidebar');
-
-    if (!toggleBtn) return;
-
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('hidden');
-        const isHidden = sidebar.classList.contains('hidden');
-        updateNavToggleIcon(isHidden);
-    });
-}
-
-// Update toggle button icon
+// Update toggle button icon (kept for backwards compatibility)
 function updateNavToggleIcon(isHidden) {
     const icon = document.getElementById('nav-toggle-icon');
     if (icon) {
@@ -603,7 +636,4 @@ function updateNavToggleIcon(isHidden) {
 document.addEventListener('DOMContentLoaded', () => {
     init();
     setupAutoHideNav();
-    setupManualNavToggle();
 });
-
-
