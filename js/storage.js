@@ -1,7 +1,7 @@
 // ===== INDEXEDDB SETUP =====
 const db = new Dexie('StudentTaskManager');
 
-db.version(2).stores({
+db.version(30).stores({
     subjects: '++id, name, color, createdAt',
     assignments: '++id, subjectId, title, dueDate, dueTime, completed, archived, createdAt',
     links: '++id, subjectId, url, title, createdAt',
