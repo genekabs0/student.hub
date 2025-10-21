@@ -217,17 +217,27 @@ async function saveSubject() {
         return;
     }
 
-    const now = Date.now();
-    const subject = {
-        name,
-        color: selectedColor,
-        createdAt: now,
-        lastModified: now
-    };
+    try {
+        const now = Date.now();
+        const subject = {
+            name,
+            color: selectedColor,
+            createdAt: now,
+            lastModified: now
+        };
 
-    await db.subjects.add(subject);
-    closeModal('add-subject-modal');
-    renderSubjects();
+        await db.subjects.add(subject);
+        closeModal('add-subject-modal');
+        await renderSubjects();
+        
+        // Try to sync to Firebase (but don't block if it fails)
+        if (typeof syncToFirestore === 'function' && currentUser) {
+            syncToFirestore().catch(err => console.log('Sync failed:', err));
+        }
+    } catch (error) {
+        console.error('Error saving subject:', error);
+        alert('Failed to save subject: ' + error.message);
+    }
 }
 
 // Edit subject
