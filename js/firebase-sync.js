@@ -128,7 +128,8 @@ async function syncFromFirestore() {
     if (!subjectsSnapshot.empty) {
       await db.subjects.clear();
       for (const doc of subjectsSnapshot.docs) {
-        await db.subjects.add(doc.data());
+        const data = doc.data();
+        await db.subjects.put(data); // Use put() to preserve IDs
       }
     }
 
@@ -137,7 +138,8 @@ async function syncFromFirestore() {
     if (!assignmentsSnapshot.empty) {
       await db.assignments.clear();
       for (const doc of assignmentsSnapshot.docs) {
-        await db.assignments.add(doc.data());
+        const data = doc.data();
+        await db.assignments.put(data); // Use put() to preserve IDs
       }
     }
 
@@ -146,7 +148,8 @@ async function syncFromFirestore() {
     if (!notesSnapshot.empty) {
       await db.notes.clear();
       for (const doc of notesSnapshot.docs) {
-        await db.notes.add(doc.data());
+        const data = doc.data();
+        await db.notes.put(data); // Use put() to preserve IDs
       }
     }
 
@@ -155,7 +158,8 @@ async function syncFromFirestore() {
     if (!linksSnapshot.empty) {
       await db.links.clear();
       for (const doc of linksSnapshot.docs) {
-        await db.links.add(doc.data());
+        const data = doc.data();
+        await db.links.put(data); // Use put() to preserve IDs
       }
     }
 
@@ -164,7 +168,8 @@ async function syncFromFirestore() {
     if (!calendarSnapshot.empty) {
       await db.calendarTasks.clear();
       for (const doc of calendarSnapshot.docs) {
-        await db.calendarTasks.add(doc.data());
+        const data = doc.data();
+        await db.calendarTasks.put(data); // Use put() to preserve IDs
       }
     }
 
