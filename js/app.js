@@ -49,7 +49,47 @@ function setupNavigation() {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const page = link.dataset.page;
-            navigateTo(page);
+            if (page) {
+                navigateTo(page);
+            }
+        });
+    });
+
+    // More menu functionality (mobile)
+    const moreBtn = document.getElementById('more-menu-btn');
+    const moreOverlay = document.getElementById('more-menu-overlay');
+    const closeMoreBtn = document.getElementById('close-more-menu');
+
+    if (moreBtn) {
+        moreBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moreOverlay.classList.add('active');
+        });
+    }
+
+    if (closeMoreBtn) {
+        closeMoreBtn.addEventListener('click', () => {
+            moreOverlay.classList.remove('active');
+        });
+    }
+
+    if (moreOverlay) {
+        moreOverlay.addEventListener('click', (e) => {
+            if (e.target === moreOverlay) {
+                moreOverlay.classList.remove('active');
+            }
+        });
+    }
+
+    // More menu items
+    document.querySelectorAll('.more-menu-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = item.dataset.page;
+            if (page) {
+                navigateTo(page);
+                moreOverlay.classList.remove('active');
+            }
         });
     });
 }

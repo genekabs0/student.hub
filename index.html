@@ -10,7 +10,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>TaskFlow - Student Task Manager</title>
-    <link rel="stylesheet" href="css/style.css?v=17">
+    <link rel="stylesheet" href="css/style.css?v=18">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
@@ -25,11 +25,11 @@
                 <span class="icon">🏠</span>
                 <span>Dashboard</span>
             </a></li>
-            <li><a href="#" data-page="notes" class="nav-link">
+            <li><a href="#" data-page="notes" class="nav-link nav-link-desktop">
                 <span class="icon">📝</span>
                 <span>Notes</span>
             </a></li>
-            <li><a href="#" data-page="calendar" class="nav-link">
+            <li><a href="#" data-page="calendar" class="nav-link nav-link-desktop">
                 <span class="icon">📅</span>
                 <span>Calendar</span>
             </a></li>
@@ -37,20 +37,52 @@
                 <span class="icon">💾</span>
                 <span>Storage</span>
             </a></li>
-            <li><a href="#" data-page="timer" class="nav-link">
+            <li><a href="#" data-page="timer" class="nav-link nav-link-desktop">
                 <span class="icon">⏱️</span>
-                <span>Focus Timer</span>
+                <span>Timer</span>
             </a></li>
-            <li><a href="#" data-page="wheel" class="nav-link">
+            <li><a href="#" data-page="wheel" class="nav-link nav-link-desktop">
                 <span class="icon">🎯</span>
-                <span>Spin Wheel</span>
+                <span>Wheel</span>
             </a></li>
             <li><a href="#" data-page="settings" class="nav-link">
                 <span class="icon">⚙️</span>
                 <span>Settings</span>
             </a></li>
+            <li class="nav-link-mobile-only"><a href="#" id="more-menu-btn" class="nav-link">
+                <span class="icon">⋮</span>
+                <span>More</span>
+            </a></li>
         </ul>
     </nav>
+
+    <!-- More Menu Popup (Mobile Only) -->
+    <div class="more-menu-overlay" id="more-menu-overlay">
+        <div class="more-menu">
+            <div class="more-menu-header">
+                <h3>More Options</h3>
+                <button class="close-more-menu" id="close-more-menu">✕</button>
+            </div>
+            <div class="more-menu-items">
+                <a href="#" data-page="notes" class="more-menu-item">
+                    <span class="icon">📝</span>
+                    <span>Notes</span>
+                </a>
+                <a href="#" data-page="calendar" class="more-menu-item">
+                    <span class="icon">📅</span>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" data-page="timer" class="more-menu-item">
+                    <span class="icon">⏱️</span>
+                    <span>Focus Timer</span>
+                </a>
+                <a href="#" data-page="wheel" class="more-menu-item">
+                    <span class="icon">🎯</span>
+                    <span>Spin Wheel</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content Area -->
     <main class="main-content">
@@ -461,15 +493,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <script src="js/storage.js?v=17"></script>
-    <script src="js/firebase-sync.js?v=17"></script>
-    <script src="js/utils.js?v=17"></script>
-    <script src="js/subjects.js?v=17"></script>
-    <script src="js/assignments.js?v=17"></script>
-    <script src="js/notes.js?v=17"></script>
-    <script src="js/calendar.js?v=17"></script>
-    <script src="js/timer.js?v=17"></script>
-    <script src="js/wheel.js?v=17"></script>
-    <script src="js/app.js?v=17"></script>
+    <script src="js/storage.js?v=18"></script>
+    <script src="js/firebase-sync.js?v=18"></script>
+    <script src="js/utils.js?v=18"></script>
+    <script src="js/subjects.js?v=18"></script>
+    <script src="js/assignments.js?v=18"></script>
+    <script src="js/notes.js?v=18"></script>
+    <script src="js/calendar.js?v=18"></script>
+    <script src="js/timer.js?v=18"></script>
+    <script src="js/wheel.js?v=18"></script>
+    <script src="js/app.js?v=18"></script>
 </body>
 </html>
