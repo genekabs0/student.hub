@@ -605,3 +605,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAutoHideNav();
     setupManualNavToggle();
 });
+
+
