@@ -788,7 +788,9 @@ body {
 
 .editor-footer {
     margin-top: var(--spacing-md);
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 12px;
     color: var(--text-secondary);
 }

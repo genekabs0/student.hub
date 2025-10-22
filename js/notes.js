@@ -5,7 +5,9 @@ let autoSaveTimeout = null;
 
 // Render notes list
 async function renderNotesList() {
-    const notes = await db.notes.orderBy('lastEdited').reverse().toArray();
+    const allNotes = await db.notes.orderBy('lastEdited').reverse().toArray();
+    // Filter out deleted notes
+    const notes = allNotes.filter(n => !n.deleted);
     const list = document.getElementById('notes-list');
 
     if (notes.length === 0) {
@@ -82,6 +84,68 @@ const autoSaveNote = debounce(async () => {
     renderNotesList();
 }, 3000);
 
+// Manual save note (triggered by Save button)
+async function manualSaveNote() {
+    if (!currentNote) {
+        alert('No note selected');
+        return;
+    }
+
+    const title = document.getElementById('note-title').value.trim() || 'Untitled Note';
+    const subjectId = document.getElementById('note-subject').value || null;
+    const content = document.getElementById('editor-content').innerHTML;
+
+    await db.notes.update(currentNote.id, {
+        title,
+        subjectId,
+        content,
+        lastEdited: Date.now()
+    });
+
+    currentNote.title = title;
+    currentNote.lastEdited = Date.now();
+
+    document.getElementById('last-edited').textContent = `Last edited: ${formatDateTime(currentNote.lastEdited)}`;
+    await renderNotesList();
+    
+    // Show confirmation
+    alert('✅ Note saved!');
+}
+
+// Delete current note
+async function deleteCurrentNote() {
+    if (!currentNote) {
+        alert('No note selected');
+        return;
+    }
+
+    if (!confirm(`Delete "${currentNote.title || 'Untitled Note'}"?`)) {
+        return;
+    }
+
+    // Soft delete
+    await db.notes.update(currentNote.id, {
+        deleted: true,
+        lastModified: Date.now()
+    });
+
+    // Clear editor
+    currentNote = null;
+    document.getElementById('note-title').value = '';
+    document.getElementById('note-subject').value = '';
+    document.getElementById('editor-content').innerHTML = '<p>Start typing your notes here...</p>';
+    document.getElementById('last-edited').textContent = 'Not saved';
+
+    // Refresh list
+    await renderNotesList();
+
+    // Load first available note if exists
+    const notes = await db.notes.where('deleted').notEqual(true).orderBy('lastEdited').reverse().toArray();
+    if (notes.length > 0) {
+        await loadNote(notes[0]);
+    }
+}
+
 // Setup editor toolbar
 function setupEditorToolbar() {
     // Format buttons
@@ -141,6 +205,8 @@ async function populateNoteSubjects() {
 // Initialize notes
 async function initNotes() {
     document.getElementById('new-note-btn').addEventListener('click', createNewNote);
+    document.getElementById('save-note-btn').addEventListener('click', manualSaveNote);
+    document.getElementById('delete-note-btn').addEventListener('click', deleteCurrentNote);
     setupEditorToolbar();
     await populateNoteSubjects();
     await renderNotesList();
