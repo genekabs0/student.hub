@@ -202,7 +202,8 @@ async function saveLink() {
 
 // File Storage
 async function renderStorage() {
-    const subjects = await db.subjects.toArray();
+    const allSubjects = await db.subjects.toArray();
+    const subjects = allSubjects.filter(s => !s.deleted);
     const foldersList = document.getElementById('folders-list');
 
     // Check if a specific subject was selected
