@@ -297,6 +297,11 @@ async function deleteSubject() {
         await safeSync();
     }
 
+    // Refresh notes dropdown if function exists
+    if (typeof populateNoteSubjects === 'function') {
+        await populateNoteSubjects();
+    }
+
     backToDashboard();
 }
 
@@ -314,6 +319,27 @@ function setupColorPicker() {
             selectedColor = btn.dataset.color;
         });
     });
+}
+
+// Create note for current subject and navigate to Storage
+async function createSubjectNote() {
+    if (!currentSubject) return;
+
+    const note = {
+        title: 'Untitled Note',
+        subjectId: currentSubject.id,
+        content: '<p>Start typing your notes here...</p>',
+        lastEdited: Date.now(),
+        createdAt: Date.now()
+    };
+
+    const noteId = await db.notes.add(note);
+    note.id = noteId;
+
+    // Navigate to Storage page and show this subject's folder
+    Storage.set('selectedSubjectForStorage', currentSubject.id);
+    Storage.set('openNoteInStorage', noteId);
+    navigateTo('storage');
 }
 
 // Initialize subject management
@@ -345,6 +371,9 @@ function initSubjects() {
             if (typeof renderStorage === 'function') renderStorage();
         }
     });
+
+    // Add Note button - create note for current subject
+    document.getElementById('add-subject-note-btn').addEventListener('click', createSubjectNote);
 
     // Back button
     document.getElementById('back-to-dashboard').addEventListener('click', backToDashboard);

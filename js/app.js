@@ -200,27 +200,6 @@ async function saveLink() {
     renderLinks();
 }
 
-// Create note for current subject and navigate to Storage
-async function createSubjectNote() {
-    if (!currentSubject) return;
-
-    const note = {
-        title: 'Untitled Note',
-        subjectId: currentSubject.id,
-        content: '<p>Start typing your notes here...</p>',
-        lastEdited: Date.now(),
-        createdAt: Date.now()
-    };
-
-    const noteId = await db.notes.add(note);
-    note.id = noteId;
-
-    // Navigate to Storage page and show this subject's folder
-    Storage.set('selectedSubjectForStorage', currentSubject.id);
-    Storage.set('openNoteInStorage', noteId); // Store note ID to open in editor
-    navigateTo('storage');
-}
-
 // File Storage
 async function renderStorage() {
     const allSubjects = await db.subjects.toArray();
@@ -645,9 +624,6 @@ async function init() {
     // Setup links
     document.getElementById('add-link-btn').addEventListener('click', showAddLinkModal);
     document.getElementById('save-link-btn').addEventListener('click', saveLink);
-    
-    // Setup subject note button
-    document.getElementById('add-subject-note-btn').addEventListener('click', createSubjectNote);
 
     // Setup storage
     document.getElementById('upload-file-btn').addEventListener('click', uploadFiles);
