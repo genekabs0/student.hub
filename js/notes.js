@@ -120,7 +120,9 @@ function setupEditorToolbar() {
 
 // Populate subject dropdown in notes
 async function populateNoteSubjects() {
-    const subjects = await db.subjects.toArray();
+    const allSubjects = await db.subjects.toArray();
+    // Filter out deleted subjects
+    const subjects = allSubjects.filter(s => !s.deleted);
     const select = document.getElementById('note-subject');
 
     // Clear existing options except first

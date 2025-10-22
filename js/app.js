@@ -200,6 +200,27 @@ async function saveLink() {
     renderLinks();
 }
 
+// Create note for current subject and navigate to Storage
+async function createSubjectNote() {
+    if (!currentSubject) return;
+
+    const note = {
+        title: 'Untitled Note',
+        subjectId: currentSubject.id,
+        content: '<p>Start typing your notes here...</p>',
+        lastEdited: Date.now(),
+        createdAt: Date.now()
+    };
+
+    const noteId = await db.notes.add(note);
+    note.id = noteId;
+
+    // Navigate to Storage page and show this subject's folder
+    Storage.set('selectedSubjectForStorage', currentSubject.id);
+    Storage.set('openNoteInStorage', noteId); // Store note ID to open in editor
+    navigateTo('storage');
+}
+
 // File Storage
 async function renderStorage() {
     const allSubjects = await db.subjects.toArray();
@@ -235,11 +256,21 @@ async function renderStorage() {
 
 async function showFolderFiles(subjectId) {
     const files = await db.files.where('subjectId').equals(subjectId).toArray();
-    const notes = await db.notes.where('subjectId').equals(subjectId).toArray();
+    const allNotes = await db.notes.where('subjectId').equals(subjectId).toArray();
+    // Filter out deleted notes
+    const notes = allNotes.filter(n => !n.deleted);
     const filesList = document.getElementById('files-list');
     const subject = await db.subjects.get(subjectId);
 
     filesList.innerHTML = `<h4 style="margin-bottom: 16px;">${escapeHtml(subject.name)} - Content</h4>`;
+
+    // Check if we should auto-open a specific note
+    const noteToOpen = Storage.get('openNoteInStorage', null);
+    if (noteToOpen) {
+        Storage.remove('openNoteInStorage');
+        // Open the note in the editor after a brief delay
+        setTimeout(() => openNoteFromStorage(noteToOpen), 100);
+    }
 
     // Show notes section
     if (notes.length > 0) {
@@ -250,14 +281,18 @@ async function showFolderFiles(subjectId) {
         for (const note of notes) {
             const noteItem = document.createElement('div');
             noteItem.className = 'file-item';
-            noteItem.style.cursor = 'pointer';
+            noteItem.style.display = 'flex';
+            noteItem.style.alignItems = 'center';
+            noteItem.style.gap = '8px';
             noteItem.innerHTML = `
                 <div class="file-icon">📝</div>
-                <div class="file-info">
+                <div class="file-info" style="flex: 1;">
                     <div class="file-name">${escapeHtml(note.title || 'Untitled Note')}</div>
                     <div class="file-meta">Last edited: ${formatDateTime(note.lastEdited)}</div>
                 </div>
                 <button class="btn btn-secondary btn-sm" onclick="openNoteFromStorage(${note.id})">Open</button>
+                <button class="btn btn-secondary btn-sm" onclick="archiveNoteFromStorage(${note.id})">📥 Archive</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteNoteFromStorage(${note.id})">🗑️ Delete</button>
             `;
             notesSection.appendChild(noteItem);
         }
@@ -363,6 +398,38 @@ async function openNoteFromStorage(noteId) {
             await loadNote(note);
         }
     }, 100);
+}
+
+// Archive note from Storage view
+async function archiveNoteFromStorage(noteId) {
+    if (!confirm('Archive this note?')) return;
+    
+    await db.notes.update(noteId, {
+        archived: true,
+        lastModified: Date.now()
+    });
+    
+    // Refresh the folder view
+    const currentSubjectId = (await db.notes.get(noteId)).subjectId;
+    if (currentSubjectId) {
+        showFolderFiles(currentSubjectId);
+    }
+}
+
+// Delete note from Storage view
+async function deleteNoteFromStorage(noteId) {
+    if (!confirm('Delete this note permanently?')) return;
+    
+    await db.notes.update(noteId, {
+        deleted: true,
+        lastModified: Date.now()
+    });
+    
+    // Refresh the folder view
+    const currentSubjectId = (await db.notes.get(noteId)).subjectId;
+    if (currentSubjectId) {
+        showFolderFiles(currentSubjectId);
+    }
 }
 
 // Apply color customization
@@ -578,6 +645,9 @@ async function init() {
     // Setup links
     document.getElementById('add-link-btn').addEventListener('click', showAddLinkModal);
     document.getElementById('save-link-btn').addEventListener('click', saveLink);
+    
+    // Setup subject note button
+    document.getElementById('add-subject-note-btn').addEventListener('click', createSubjectNote);
 
     // Setup storage
     document.getElementById('upload-file-btn').addEventListener('click', uploadFiles);
