@@ -31,7 +31,7 @@ async function renderSubjects() {
 
     for (const subject of subjects) {
         const assignments = await db.assignments.where('subjectId').equals(subject.id).toArray();
-        const activeAssignments = assignments.filter(a => !a.archived);
+        const activeAssignments = assignments.filter(a => !a.archived && !a.deleted);
         const completed = activeAssignments.filter(a => a.completed).length;
         const total = activeAssignments.length;
         const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -177,8 +177,9 @@ function backToDashboard() {
 async function updateSubjectProgress() {
     if (!currentSubject) return;
 
-    const assignments = await db.assignments.where('subjectId').equals(currentSubject.id).toArray();
-    const activeAssignments = assignments.filter(a => !a.archived);
+    const allAssignments = await db.assignments.where('subjectId').equals(currentSubject.id).toArray();
+    // Filter out deleted AND archived assignments
+    const activeAssignments = allAssignments.filter(a => !a.archived && !a.deleted);
     const completed = activeAssignments.filter(a => a.completed).length;
     const total = activeAssignments.length;
     const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
