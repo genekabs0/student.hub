@@ -11,8 +11,8 @@ async function drawWheel() {
     const centerY = canvas.height / 2;
     const radius = 180;
 
-    const subjects = await db.subjects.toArray();
-
+    const allSubjects = await db.subjects.toArray();
+const subjects = allSubjects.filter(s => !s.deleted);
     if (subjects.length === 0) {
         // No subjects - show empty state
         ctx.clearRect(0, 0, canvas.width, canvas.height);
