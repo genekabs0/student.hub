@@ -12,7 +12,8 @@ async function drawWheel() {
     const radius = 180;
 
     const allSubjects = await db.subjects.toArray();
-const subjects = allSubjects.filter(s => !s.deleted);
+    const subjects = allSubjects.filter(s => !s.deleted);
+    
     if (subjects.length === 0) {
         // No subjects - show empty state
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -79,7 +80,8 @@ const subjects = allSubjects.filter(s => !s.deleted);
 
 // Get which subject is currently at the top (under the pointer)
 async function getSubjectAtPointer() {
-    const subjects = await db.subjects.toArray();
+    const allSubjects = await db.subjects.toArray();
+    const subjects = allSubjects.filter(s => !s.deleted);
     if (subjects.length === 0) return null;
 
     const sliceAngle = (2 * Math.PI) / subjects.length;
@@ -114,7 +116,8 @@ async function getSubjectAtPointer() {
 async function spinWheel() {
     if (spinning) return;
 
-    const subjects = await db.subjects.toArray();
+    const allSubjects = await db.subjects.toArray();
+    const subjects = allSubjects.filter(s => !s.deleted);
     if (subjects.length === 0) {
         alert('Add some subjects first!');
         return;
